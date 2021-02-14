@@ -9,7 +9,7 @@ urlpatterns = {
 
 
 def secret_controller(request):
-    request['secret_key'] = 'SECRET'
+    request['secret_key'] = 'Important info!'
     request['contacts'] = 'Important contacts!'
 
 
