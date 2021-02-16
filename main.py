@@ -5,6 +5,7 @@ urlpatterns = {
     '/': views.main_view,
     '/about/': views.about_view,
     '/contacts/': views.contacts_view,
+    '/courses/': views.courses_view,
 }
 
 

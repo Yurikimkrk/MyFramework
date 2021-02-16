@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Contacts</title>
-</head>
-<body>
-<h1>Лекции по английскому языку</h1>
+{% extends "base.html" %}
+{% block title %}
+Контакты
+{% endblock %}
+{% block body %}
+{% include "inc-menu.html" %}
+<h1>Наши контакты</h1>
 <h3>Какие то важные контакты: {{contacts}}</h3>
 <br>
 <h1>Функция отправки сообщения</h1>
@@ -15,5 +14,4 @@
     <input type="email" name="email" placeholder="email">
     <button type="submit">Отправить</button>
 </form>
-</body>
-</html>
+{% endblock %}
