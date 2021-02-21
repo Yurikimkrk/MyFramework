@@ -6,6 +6,11 @@ def main_view(request):
     secret = request.get('secret_key', None)
     return '200 OK', render('index.html', secret=secret)
 
+def courses_view(request):
+    return '200 OK', render('courses.html')
+
+def about_view(request):
+    return '200 OK', render('about.html')
 
 def contacts_view(request):
     contacts = request.get('contacts', None)
@@ -18,7 +23,3 @@ def contacts_view(request):
               f'тема - {Application.decode_value(title)}, текст - '
               f' {Application.decode_value(text)}.')
     return '200 OK', render('contacts.html', contacts=contacts)
-
-
-def about_view(request):
-    return '200 OK', "Very important info"

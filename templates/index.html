@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-</head>
-<body>
-<h1>Лекции по английскому языку</h1>
-<h3>Какой то секрет тут: {{secret}}</h3>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}
+Контакты
+{% endblock %}
+{% block body %}
+{% include "inc-menu.html" %}
+<h1>Курсы по английскому языку</h1>
+<h3>Все самое важное на главной странице: {{secret}}</h3>
+{% endblock %}
