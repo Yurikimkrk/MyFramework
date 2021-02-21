@@ -32,6 +32,12 @@ class Application:
         val_decode_str = quopri.decodestring(val_b)
         return val_decode_str.decode('UTF-8')
 
+    def add_route(self, url):
+        def inner(view):
+            self.urlpatterns[url] = view
+
+        return inner
+
     def __init__(self, urlpatterns: dict, front_controllers: list):
         self.urlpatterns = urlpatterns
         self.front_controllers = front_controllers
