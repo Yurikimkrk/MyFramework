@@ -1,22 +1,43 @@
-from framework import render, Application
+from wsgiref.simple_server import make_server
+from framework import render, Application, DebugApplication, FakeApplication
 from models import TrainingSite
-from logger import Logger
+from logger import Logger, debug
 
 site = TrainingSite()
 logger = Logger('main')
 
+urlpatterns = {}
 
+
+def secret_controller(request):
+    request['contacts'] = 'Important contacts!'
+
+
+front_controllers = [
+    secret_controller
+]
+
+application = Application(urlpatterns, front_controllers)
+
+
+# application = DebugApplication(urlpatterns, front_controllers)
+# application = FakeApplication(urlpatterns, front_controllers)
+
+
+@application.add_route('/')
 def main_view(request):
     logger.log('Список курсов')
     print(f'Список курсов - {site.courses}')
     return '200 OK', render('index.html', objects_list=site.courses)
 
 
+@application.add_route('/about/')
 def about_view(request):
     logger.log('Информация о портале')
     return '200 OK', render('about.html')
 
 
+@application.add_route('/contacts/')
 def contacts_view(request):
     logger.log('Наши контакты')
     contacts = request.get('contacts', None)
@@ -31,10 +52,12 @@ def contacts_view(request):
     return '200 OK', render('contacts.html', contacts=contacts)
 
 
+@debug
+@application.add_route('/create-course/')
 def create_course(request):
     if request['method'] == 'POST':
         data = request['data']
-        name = data['name']
+        name = Application.decode_value(data['name'])
         category_id = data.get('category_id')
         category = None
         if category_id:
@@ -48,6 +71,7 @@ def create_course(request):
         return '200 OK', render('create_course.html', categories=categories)
 
 
+@application.add_route('/create-category/')
 def create_category(request):
     if request['method'] == 'POST':
         data = request['data']
@@ -69,9 +93,10 @@ def create_category(request):
         return '200 OK', render('create_category.html', categories=categories)
 
 
+@application.add_route('/copy-course/')
 def copy_course(request):
     request_params = request['request_params']
-    name = request_params['name']
+    name = Application.decode_value(request_params['name'])
     old_course = site.get_course(name)
     if old_course:
         new_name = f'{name}(copy)'
@@ -82,28 +107,12 @@ def copy_course(request):
     return '200 OK', render('index.html', objects_list=site.courses)
 
 
+@application.add_route('/category-list/')
 def category_list(request):
     logger.log('Список категорий')
     return '200 OK', render('category_list.html', objects_list=site.categories)
 
 
-urlpatterns = {
-    '/': main_view,
-    '/about/': about_view,
-    '/contacts/': contacts_view,
-    '/create-course/': create_course,
-    '/create-category/': create_category,
-    '/copy-course/': copy_course,
-    '/category-list/': category_list,
-}
-
-
-def secret_controller(request):
-    request['contacts'] = 'Important contacts!'
-
-
-front_controllers = [
-    secret_controller
-]
-
-application = Application(urlpatterns, front_controllers)
+with make_server('', 8000, application) as httpd:
+    print("Serving on port 8000...")
+    httpd.serve_forever()
