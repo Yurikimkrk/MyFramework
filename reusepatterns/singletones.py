@@ -1,5 +1,4 @@
 class SingletonByName(type):
-    # синглтон
     def __init__(cls, name, bases, attrs, **kwargs):
         super().__init__(name, bases, attrs)
         cls.__instance = {}
